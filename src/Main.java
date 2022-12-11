@@ -1,33 +1,32 @@
-import User.User;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import input.InputData;
+import inputClasses.InputData;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws IOException {
 
+        File out = new File(args[1]);
+        action(args[0], args[1]);
+    }
+
+    public static void action(final String filePath1,
+                              final String filePath2) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        InputData inputData = objectMapper.readValue(new File("checker/resources/in/basic_1.json"),
+        InputData inputData = objectMapper.readValue(new File(filePath1),
                 InputData.class);
 
-
         ArrayNode output = objectMapper.createArrayNode();
-        ObjectNode node = objectMapper.createObjectNode();
-        node.set("inputData", objectMapper.convertValue(inputData, JsonNode.class));
-        User user = new User();
-        user.setName(inputData.getUsers().get(0).getCredentials().getName());
-        node.put("name", user.getName());
-        System.out.println(user.getName());
-        output.add(node);
+
+
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
-        objectWriter.writeValue(new File("testing.json"), output);
-
-
+        objectWriter.writeValue(new File(filePath2), output);
     }
 }
