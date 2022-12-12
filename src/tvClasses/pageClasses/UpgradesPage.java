@@ -1,7 +1,10 @@
 package tvClasses.pageClasses;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import inputClasses.ActionInput;
 import movieClasses.Movie;
+import tvClasses.TV;
+import tvClasses.actionClasses.PageVisitor;
 
 import java.util.ArrayList;
 
@@ -15,7 +18,7 @@ public class UpgradesPage extends Page {
     }
 
     @Override
-    public void createOutput(ArrayNode output) {
-
+    public void accept(PageVisitor v, ActionInput actionInput, final TV tv) {
+        v.visit(this, actionInput, tv);
     }
 }

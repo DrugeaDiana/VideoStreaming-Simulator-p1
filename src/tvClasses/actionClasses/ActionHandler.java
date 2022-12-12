@@ -1,12 +1,19 @@
 package tvClasses.actionClasses;
 
 import inputClasses.ActionInput;
-import inputClasses.CredentialsInput;
-import inputClasses.FiltersInput;
-import tvClasses.pageClasses.Page;
+import tvClasses.TV;
+
 
 public class ActionHandler {
-    public void actionParsing(ActionInput actionInput, Page activePage) {
-
+    private final OnPageVisitor onPage = new OnPageVisitor();
+    private final ChangePageVisitor changePage = new ChangePageVisitor();
+    public void actionParsing(ActionInput actionInput, TV tv) {
+        if (actionInput.getType().equals("on page")) {
+            //System.out.println("works hewwo?");
+            tv.getActivePage().accept(onPage, actionInput, tv);
+        } else {
+            //System.out.println("maybe not?");
+            tv.getActivePage().accept(changePage, actionInput, tv);
+        }
     }
 }

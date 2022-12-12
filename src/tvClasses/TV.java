@@ -1,5 +1,6 @@
 package tvClasses;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import inputClasses.ActionInput;
 import inputClasses.InputData;
 import inputClasses.MovieInput;
@@ -26,8 +27,15 @@ public class TV {
     private final RegisterPage registerPage = new RegisterPage();
     private final SeeDetailsPage seeDetailsPage = new SeeDetailsPage();
     private final UpgradesPage upgradesPage = new UpgradesPage();
+    private final ActionHandler actionHandler = new ActionHandler();
+    private final InputData input;
+    private final ArrayNode output;
 
-    public void initialize(InputData input) {
+    public TV(InputData input, ArrayNode output) {
+        this.input = input;
+        this.output = output;
+    }
+    public void initialize() {
         ArrayList<User> users = new ArrayList<>();
         for (UserInput user : input.getUsers()){
             users.add(new User(user));
@@ -44,10 +52,10 @@ public class TV {
         activePage = homepageNon;
     }
 
-    public void mainLoop(InputData inputData) {
-        ActionHandler actionHandler = new ActionHandler();
-        for(ActionInput actionInput : inputData.getActions()) {
-            actionHandler.actionParsing(actionInput, activePage);
+    public void mainLoop() {
+        for(ActionInput actionInput : input.getActions()) {
+            //System.out.println(actionInput.getType());
+            actionHandler.actionParsing(actionInput, this);
         }
     }
 
@@ -65,6 +73,46 @@ public class TV {
 
     public void setActivePage(Page activePage) {
         this.activePage = activePage;
+    }
+
+    public InputData getInput(){
+        return input;
+    }
+
+    public ArrayNode getOutput() {
+        return output;
+    }
+
+    public HomepageNon getHomepageNon() {
+        return homepageNon;
+    }
+
+    public LoginPage getLoginPage() {
+        return loginPage;
+    }
+
+    public LogoutPage getLogoutPage() {
+        return logoutPage;
+    }
+
+    public MoviesPage getMoviesPage() {
+        return moviesPage;
+    }
+
+    public RegisterPage getRegisterPage() {
+        return registerPage;
+    }
+
+    public SeeDetailsPage getSeeDetailsPage() {
+        return seeDetailsPage;
+    }
+
+    public UpgradesPage getUpgradesPage() {
+        return upgradesPage;
+    }
+
+    public HomepageAuth getHomepageAuth() {
+        return homepageAuth;
     }
 }
 

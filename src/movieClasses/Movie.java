@@ -1,9 +1,10 @@
 package movieClasses;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import inputClasses.MovieInput;
 
 import java.util.ArrayList;
-
+@JsonIgnoreProperties({"totalRatings"})
 public class Movie {
     private String name;
     private int year;
@@ -12,6 +13,13 @@ public class Movie {
     private ArrayList<String> actors;
     private ArrayList<String> countriesBanned;
 
+    private int numLikes;
+    private double rating;
+    private int numRatings;
+    private double totalRatings;
+
+    public Movie() { }
+
     public Movie(final MovieInput movie) {
         this.name = movie.getName();
         this.year = movie.getYear();
@@ -19,6 +27,10 @@ public class Movie {
         this.genres = movie.getGenres();
         this.actors = movie.getActors();
         this.countriesBanned = movie.getCountriesBanned();
+        this.numLikes = 0;
+        this.numRatings = 0;
+        this.totalRatings = 0;
+        this.rating = 0;
     }
 
     public String getName() {
@@ -79,5 +91,37 @@ public class Movie {
                 ", actors=" + actors +
                 ", countriesBanned=" + countriesBanned +
                 '}';
+    }
+
+    public int getNumLikes() {
+        return numLikes;
+    }
+
+    public void setNumLikes(int numLikes) {
+        this.numLikes = numLikes;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public int getNumRatings() {
+        return numRatings;
+    }
+
+    public void setNumRatings(int numRatings) {
+        this.numRatings = numRatings;
+    }
+
+    public double getTotalRatings() {
+        return totalRatings;
+    }
+
+    public void setTotalRatings(double totalRatings) {
+        this.totalRatings = totalRatings;
     }
 }

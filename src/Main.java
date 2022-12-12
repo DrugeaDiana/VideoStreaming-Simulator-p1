@@ -2,6 +2,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import inputClasses.InputData;
+import tvClasses.TV;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +25,9 @@ public class Main {
                 InputData.class);
 
         ArrayNode output = objectMapper.createArrayNode();
-
+        TV tv = new TV(inputData, output);
+        tv.initialize();
+        tv.mainLoop();
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(new File(filePath2), output);

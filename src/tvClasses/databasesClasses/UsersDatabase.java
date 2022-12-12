@@ -40,6 +40,15 @@ public class UsersDatabase {
         return false;
     }
 
+    public User getSpecificUser(Credentials userData) {
+        for (User user : users) {
+            if (user.getCredentials().getName().equals(userData.getName())) {
+                return user;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return "UsersDatabase{" +
