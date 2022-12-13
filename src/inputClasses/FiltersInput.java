@@ -1,22 +1,14 @@
-package inputClasses;
+package inputclasses;
 
-public class FiltersInput {
-    private SortingInput sort;
-    private ContainsInput contains;
+public final class FiltersInput {
+    private final SortingInput sort = new SortingInput();
+    private final ContainsInput contains = new ContainsInput();
 
     public SortingInput getSort() {
         return sort;
     }
 
-    public void setSort(final SortingInput sort) {
-        this.sort = sort;
-    }
-
     public ContainsInput getContains() {
         return contains;
-    }
-
-    public void setContains(final ContainsInput contains) {
-        this.contains = contains;
     }
 }

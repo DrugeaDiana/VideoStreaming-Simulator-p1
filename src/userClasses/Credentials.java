@@ -1,9 +1,9 @@
-package userClasses;
+package userclasses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import inputClasses.CredentialsInput;
+import inputclasses.CredentialsInput;
 @JsonIgnoreProperties({"balanceNr"})
-public class Credentials {
+public final class Credentials {
     private String name;
     private String password;
     private String accountType;
@@ -56,31 +56,28 @@ public class Credentials {
         return balanceNr;
     }
 
+    /**
+     * Saves the int value of the value while also converting it to string for the output.
+     * @param balanceNr number value for balance
+     */
     public void setBalanceNr(final int balanceNr) {
         this.balanceNr = balanceNr;
         setBalance(Integer.toString(this.balanceNr));
     }
 
+    /**
+     * @param credentials Input data
+     * @return if the account is correct or not (aka has the same password)
+     */
     public boolean checkPassword(final Credentials credentials) {
         return this.password.equals(credentials.getPassword());
-    }
-
-    @Override
-    public String toString() {
-        return "Credentials{" +
-                "name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", accountType='" + accountType + '\'' +
-                ", country='" + country + '\'' +
-                ", balance=" + balanceNr +
-                '}';
     }
 
     public String getBalance() {
         return balance;
     }
 
-    public void setBalance(String balance) {
+    public void setBalance(final String balance) {
         this.balance = balance;
     }
 }

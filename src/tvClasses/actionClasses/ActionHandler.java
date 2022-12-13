@@ -1,18 +1,25 @@
-package tvClasses.actionClasses;
+package tvclasses.actionclasses;
 
-import inputClasses.ActionInput;
-import tvClasses.TV;
+import inputclasses.ActionInput;
+import tvclasses.TV;
 
 
-public class ActionHandler {
+public final class ActionHandler {
     private final OnPageVisitor onPage = new OnPageVisitor();
     private final ChangePageVisitor changePage = new ChangePageVisitor();
-    public void actionParsing(ActionInput actionInput, TV tv) {
+
+    /**
+     * The function takes each action from the actionInput variable and calls the
+     * specific visitor depending on what type of action it is, either "on page"
+     * where it calls the OnPageVisitor or "change page" where it calls
+     * the ChangePageVisitor.
+     * @param actionInput command given
+     * @param tv main variable
+     */
+    public void actionParsing(final ActionInput actionInput, final TV tv) {
         if (actionInput.getType().equals("on page")) {
-            //System.out.println("works hewwo?");
             tv.getActivePage().accept(onPage, actionInput, tv);
         } else {
-            //System.out.println("maybe not?");
             tv.getActivePage().accept(changePage, actionInput, tv);
         }
     }

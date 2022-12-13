@@ -1,28 +1,23 @@
-package tvClasses.pageClasses;
+package tvclasses.pageclasses;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import inputClasses.ActionInput;
-import movieClasses.Movie;
-import tvClasses.TV;
-import tvClasses.actionClasses.PageVisitor;
-
+import inputclasses.ActionInput;
+import movieclasses.Movie;
+import tvclasses.TV;
+import tvclasses.actionclasses.PageVisitor;
 import java.util.ArrayList;
 
-public class LoginPage extends Page {
-    public LoginPage(String name, ArrayList<Movie> movies) {
+public final class LoginPage extends Page {
+    public LoginPage(final String name, final ArrayList<Movie> movies) {
         super(name, movies);
     }
 
-    public LoginPage(){
+    public LoginPage() {
         this.setName("LoginPage");
     }
 
 
     @Override
-    public void accept(PageVisitor v, ActionInput actionInput, final TV tv) {
+    public void accept(final PageVisitor v, final ActionInput actionInput, final TV tv) {
         v.visit(this, actionInput, tv);
     }
 }

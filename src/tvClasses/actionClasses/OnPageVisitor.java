@@ -1,49 +1,76 @@
-package tvClasses.actionClasses;
+package tvclasses.actionclasses;
 
-import inputClasses.ActionInput;
-import inputClasses.FiltersInput;
-import inputClasses.InputData;
-import movieClasses.Movie;
-import tvClasses.TV;
-import tvClasses.databasesClasses.MovieDatabase;
-import tvClasses.databasesClasses.UsersDatabase;
-import tvClasses.pageClasses.*;
-import userClasses.Credentials;
-import userClasses.User;
+import inputclasses.ActionInput;
+import inputclasses.FiltersInput;
+import movieclasses.Movie;
+import tvclasses.TV;
+import tvclasses.databaseclasses.MovieDatabase;
+import tvclasses.databaseclasses.UsersDatabase;
+import tvclasses.pageclasses.RegisterPage;
+import tvclasses.pageclasses.HomepageNon;
+import tvclasses.pageclasses.HomepageAuth;
+import tvclasses.pageclasses.LoginPage;
+import tvclasses.pageclasses.SeeDetailsPage;
+import tvclasses.pageclasses.UpgradesPage;
+import tvclasses.pageclasses.MoviesPage;
+import userclasses.Credentials;
+import userclasses.User;
 
 import java.util.ArrayList;
 
+/**
+ * Visitor Pattern
+ */
 public class OnPageVisitor implements PageVisitor {
+    private static final int PREMIUM_PRICE = 10;
+    private static final int FILM_PRICE = 2;
+    private static final int MAX_RATING = 5;
 
+    /**
+     * Implements the "on page" action for the LoginPage class, which will try to
+     * log in a user in the program if the data is correct and create the corresponding output
+     * or give the error output.
+     * @param loginPage current page
+     * @param actionInput action
+     * @param tv main variable
+     */
     @Override
-    public void visit(LoginPage loginPage, ActionInput actionInput, final TV tv) {
-        Credentials credentials = new Credentials(actionInput.getCredentials());
+    public void visit(final LoginPage loginPage, final ActionInput actionInput, final TV tv) {
+        final Credentials credentials = new Credentials(actionInput.getCredentials());
         if (UsersDatabase.getInstance().checkExistingUser(credentials)) {
-            User user = UsersDatabase.getInstance().getSpecificUser(credentials);
-            //System.out.println("am gasit pe cineva " + credentials.getName());
-            //System.out.println("parola e " + credentials.getPassword());
-            if (user.getCredentials().checkPassword(credentials)) {
-                tv.setActivePage(tv.getHomepageAuth());
-                //loginPage.setMoviesShown(MovieDatabase.getInstance().getMovies());
-                tv.setActiveUser(user);
-                loginPage.createOutput(tv);
+            final User user = UsersDatabase.getInstance().getSpecificUser(credentials);
+            if (user != null) {
+                if (user.getCredentials().checkPassword(credentials)) {
+                    tv.setActivePage(tv.getHomepageAuth());
+                    tv.setActiveUser(user);
+                    loginPage.createOutput(tv);
+                } else {
+                    loginPage.createOutputError(tv);
+                    tv.setActivePage(tv.getHomepageNon());
+                }
             } else {
-               // System.out.println("wrong pass my guy :P");
                 loginPage.createOutputError(tv);
                 tv.setActivePage(tv.getHomepageNon());
             }
-            //System.out.println("neato burrito");
         } else {
             loginPage.createOutputError(tv);
-            //System.out.println("wrong user my boy");
             tv.setActivePage(tv.getHomepageNon());
         }
     }
 
+    /**
+     * Implements the "on page" action for a RegisterPage class. The program will try to create
+     * a new user and create the specific output if it's successful or the error output if it
+     * fails.
+     * @param registerPage active page
+     * @param actionInput action
+     * @param tv main variable
+     */
     @Override
-    public void visit(RegisterPage registerPage, ActionInput actionInput, final TV tv) {
-        Credentials credentials = new Credentials(actionInput.getCredentials());
-        User user = new User();
+    public void visit(final RegisterPage registerPage, final ActionInput actionInput,
+                      final TV tv) {
+        final Credentials credentials = new Credentials(actionInput.getCredentials());
+        final User user = new User();
         user.setCredentials(credentials);
         if (UsersDatabase.getInstance().checkExistingUser(credentials)) {
             registerPage.createOutputError(tv);
@@ -56,51 +83,85 @@ public class OnPageVisitor implements PageVisitor {
         tv.setActivePage(tv.getHomepageAuth());
     }
 
+    /**
+     * Implements the "on page" actions for a MoviesPage, aka the search functionality and the
+     * filter functionality and will create the specific output (or the error output if the
+     * command exists).
+     * @param moviesPage active page
+     * @param actionInput action
+     * @param tv main variable
+     */
     @Override
-    public void visit(MoviesPage moviesPage, ActionInput actionInput, final TV tv) {
-        String command = actionInput.getFeature();
+    public void visit(final MoviesPage moviesPage, final ActionInput actionInput, final TV tv) {
+        final String command = actionInput.getFeature();
         if (command.equals("search")) {
-            String movieName = actionInput.getStartsWith();
-            ArrayList<Movie> foundMovies = MovieDatabase.getInstance().searchMoviesName(movieName);
+            final String movieName = actionInput.getStartsWith();
+            ArrayList<Movie> foundMovies = moviesPage.getMoviesShown();
+            foundMovies = MovieDatabase.getInstance().searchMoviesName(movieName, foundMovies);
             moviesPage.createOutput(tv, foundMovies);
         } else if (command.equals("filter")) {
-            FiltersInput filter = actionInput.getFilters();
+            final FiltersInput filter = actionInput.getFilters();
             ArrayList<Movie> sortedMovies = moviesPage.getMoviesShown();
             if (filter.getSort() != null) {
-                sortedMovies = MovieDatabase.getInstance().sortedMovieList(filter.getSort(),sortedMovies);
+                MovieDatabase.getInstance().sortedMovieList(filter.getSort(), sortedMovies);
             }
             if (filter.getContains() != null) {
-                sortedMovies = MovieDatabase.getInstance().filterByContains(filter.getContains(), sortedMovies);
+                MovieDatabase.getInstance().filterByContains(filter.getContains(), sortedMovies);
             }
             moviesPage.setMoviesShown(sortedMovies);
             moviesPage.createOutput(tv);
+            moviesPage.setFilter(true);
         } else {
             moviesPage.createOutputError(tv);
+            tv.setActivePage(tv.getHomepageAuth());
         }
     }
 
+    /**
+     * Implements the "on page" action for a SeeDetailsPage class which will execute the
+     * purchase, watch, like and rate action and will throw out the specific output error
+     * if a different command is used or the specific actions failed.
+     * @param seeDetailsPage current page
+     * @param actionInput action
+     * @param tv main variable
+     */
     @Override
-    public void visit(SeeDetailsPage seeDetailsPage, ActionInput actionInput, final TV tv) {
-        String command = actionInput.getFeature();
+    public void visit(final SeeDetailsPage seeDetailsPage, final ActionInput actionInput,
+                      final TV tv) {
+        final String command = actionInput.getFeature();
         Movie auxMovie;
         switch (command) {
             case "purchase" -> {
                 auxMovie = MovieDatabase.getInstance().getMovieByName(actionInput.getMovie());
                 if (auxMovie == null) {
-                    seeDetailsPage.createOutputError(tv);
-                    return;
+                    auxMovie = seeDetailsPage.getMoviesShown().get(0);
                 }
+
                 if (tv.getActiveUser().getPurchasedMovies().contains(auxMovie)) {
                     seeDetailsPage.createOutputError(tv);
                     return;
                 }
-                if (tv.getActiveUser().getNumFreePremiumMovies() > 0) {
-                    tv.getActiveUser().setNumFreePremiumMovies(tv.getActiveUser().getNumFreePremiumMovies() - 1);
-                    tv.getActiveUser().getPurchasedMovies().add(auxMovie);
-                    seeDetailsPage.createOutput(tv);
+
+                if (tv.getActiveUser().getCredentials().getAccountType().equals("premium")) {
+                    if (tv.getActiveUser().getNumFreePremiumMovies() > 0) {
+                        tv.getActiveUser().setNumFreePremiumMovies(tv.getActiveUser().
+                                getNumFreePremiumMovies() - 1);
+                        tv.getActiveUser().getPurchasedMovies().add(auxMovie);
+                        seeDetailsPage.createOutput(tv);
+                    } else {
+                        if (tv.getActiveUser().getTokensCount() > FILM_PRICE) {
+                            tv.getActiveUser().setTokensCount(tv.getActiveUser().
+                                    getTokensCount() - FILM_PRICE);
+                            tv.getActiveUser().getPurchasedMovies().add(auxMovie);
+                            seeDetailsPage.createOutput(tv);
+                        } else {
+                            seeDetailsPage.createOutputError(tv);
+                        }
+                    }
                 } else {
-                    if (tv.getActiveUser().getTokensCount() > 2) {
-                        tv.getActiveUser().setTokensCount(tv.getActiveUser().getTokensCount() - 2);
+                    if (tv.getActiveUser().getTokensCount() > FILM_PRICE) {
+                        tv.getActiveUser().setTokensCount(tv.getActiveUser().
+                                getTokensCount() - FILM_PRICE);
                         tv.getActiveUser().getPurchasedMovies().add(auxMovie);
                         seeDetailsPage.createOutput(tv);
                     } else {
@@ -111,9 +172,9 @@ public class OnPageVisitor implements PageVisitor {
             case "watch" -> {
                 auxMovie = MovieDatabase.getInstance().getMovieByName(actionInput.getMovie());
                 if (auxMovie == null) {
-                    seeDetailsPage.createOutputError(tv);
-                    return;
+                    auxMovie = seeDetailsPage.getMoviesShown().get(0);
                 }
+
                 if (tv.getActiveUser().getPurchasedMovies().contains(auxMovie)) {
                     tv.getActiveUser().getWatchedMovies().add(auxMovie);
                     seeDetailsPage.createOutput(tv);
@@ -124,9 +185,9 @@ public class OnPageVisitor implements PageVisitor {
             case "like" -> {
                 auxMovie = MovieDatabase.getInstance().getMovieByName(actionInput.getMovie());
                 if (auxMovie == null) {
-                    seeDetailsPage.createOutputError(tv);
-                    return;
+                    auxMovie = seeDetailsPage.getMoviesShown().get(0);
                 }
+
                 if (tv.getActiveUser().getWatchedMovies().contains(auxMovie)) {
                     tv.getActiveUser().getLikedMovies().add(auxMovie);
                     auxMovie.setNumLikes(auxMovie.getNumLikes() + 1);
@@ -138,9 +199,15 @@ public class OnPageVisitor implements PageVisitor {
             case "rate" -> {
                 auxMovie = MovieDatabase.getInstance().getMovieByName(actionInput.getMovie());
                 if (auxMovie == null) {
+                    auxMovie = seeDetailsPage.getMoviesShown().get(0);
+                }
+
+                if (actionInput.getRate() > MAX_RATING) {
                     seeDetailsPage.createOutputError(tv);
+                    tv.setActivePage(tv.getHomepageAuth());
                     return;
                 }
+
                 if (tv.getActiveUser().getWatchedMovies().contains(auxMovie)) {
                     double rate = actionInput.getRate();
                     double totalRate = auxMovie.getTotalRatings();
@@ -151,6 +218,7 @@ public class OnPageVisitor implements PageVisitor {
                     auxMovie.setRating(rate);
                     auxMovie.setTotalRatings(totalRate);
                     auxMovie.setNumRatings(nr);
+                    tv.getActiveUser().getRatedMovies().add(auxMovie);
                     seeDetailsPage.createOutput(tv);
                 } else {
                     seeDetailsPage.createOutputError(tv);
@@ -160,21 +228,31 @@ public class OnPageVisitor implements PageVisitor {
         }
     }
 
+    /**
+     * Implements the "on page" functionality for an UpgradesPage class, which will execute the
+     * "buy tokens" and "buy premium account" actions. It will create the corresponding error
+     * output in case a different command is tried to be used on this page.
+     * @param upgradesPage current page
+     * @param actionInput action
+     * @param tv main variable
+     */
     @Override
-    public void visit(UpgradesPage upgradesPage, ActionInput actionInput, final TV tv) {
-        String command = actionInput.getFeature();
-        User activeUser = tv.getActiveUser();
+    public void visit(final UpgradesPage upgradesPage, final ActionInput actionInput,
+                      final TV tv) {
+        final String command = actionInput.getFeature();
+        final User activeUser = tv.getActiveUser();
         if (command.equals("buy tokens")) {
-            int nr = actionInput.getCount();
-            if (activeUser.getCredentials().getBalanceNr() > nr) {
+            final int nr = actionInput.getCount();
+            if (activeUser.getCredentials().getBalanceNr() >= nr) {
                 activeUser.setTokensCount(activeUser.getTokensCount() + nr);
-                activeUser.getCredentials().setBalanceNr(activeUser.getCredentials().getBalanceNr() - nr);
+                activeUser.getCredentials().setBalanceNr(activeUser.getCredentials().
+                        getBalanceNr() - nr);
             } else {
                 upgradesPage.createOutputError(tv);
             }
         } else if (command.equals("buy premium account")) {
-            if (activeUser.getTokensCount() > 10) {
-                activeUser.setTokensCount(activeUser.getTokensCount() - 10);
+            if (activeUser.getTokensCount() > PREMIUM_PRICE) {
+                activeUser.setTokensCount(activeUser.getTokensCount() - PREMIUM_PRICE);
                 activeUser.getCredentials().setAccountType("premium");
             } else {
                 upgradesPage.createOutputError(tv);
@@ -184,18 +262,27 @@ public class OnPageVisitor implements PageVisitor {
         }
     }
 
+    /**
+     * Creates the error output in case an "on page" action is used on a HomepageAuth class
+     * @param homepageAuth active page
+     * @param actionInput action
+     * @param tv main variable
+     */
     @Override
-    public void visit(LogoutPage logoutPage, ActionInput actionInput, final TV tv) {
-        System.out.println("hewwo 6");
-    }
-
-    @Override
-    public void visit(HomepageAuth homepageAuth, ActionInput actionInput, final TV tv) {
+    public void visit(final HomepageAuth homepageAuth, final ActionInput actionInput,
+                      final TV tv) {
         homepageAuth.createOutputError(tv);
     }
 
+    /**
+     * Creates the error output in case an "on page" action is used on a LogoutPage
+     * @param homepageNon active page
+     * @param actionInput action
+     * @param tv main variable
+     */
     @Override
-    public void visit(HomepageNon homepageNon, ActionInput actionInput, final TV tv) {
+    public void visit(final HomepageNon homepageNon, final ActionInput actionInput,
+                      final TV tv) {
         homepageNon.createOutputError(tv);
     }
 }

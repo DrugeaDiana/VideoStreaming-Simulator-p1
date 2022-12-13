@@ -1,11 +1,11 @@
-package movieClasses;
+package movieclasses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import inputClasses.MovieInput;
+import inputclasses.MovieInput;
 
 import java.util.ArrayList;
 @JsonIgnoreProperties({"totalRatings"})
-public class Movie {
+public final class Movie {
     private String name;
     private int year;
     private int duration;
@@ -81,23 +81,11 @@ public class Movie {
         this.countriesBanned = countriesBanned;
     }
 
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "name='" + name + '\'' +
-                ", year=" + year +
-                ", duration=" + duration +
-                ", genres=" + genres +
-                ", actors=" + actors +
-                ", countriesBanned=" + countriesBanned +
-                '}';
-    }
-
     public int getNumLikes() {
         return numLikes;
     }
 
-    public void setNumLikes(int numLikes) {
+    public void setNumLikes(final int numLikes) {
         this.numLikes = numLikes;
     }
 
@@ -105,7 +93,7 @@ public class Movie {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(final double rating) {
         this.rating = rating;
     }
 
@@ -113,7 +101,7 @@ public class Movie {
         return numRatings;
     }
 
-    public void setNumRatings(int numRatings) {
+    public void setNumRatings(final int numRatings) {
         this.numRatings = numRatings;
     }
 
@@ -121,7 +109,7 @@ public class Movie {
         return totalRatings;
     }
 
-    public void setTotalRatings(double totalRatings) {
+    public void setTotalRatings(final double totalRatings) {
         this.totalRatings = totalRatings;
     }
 }

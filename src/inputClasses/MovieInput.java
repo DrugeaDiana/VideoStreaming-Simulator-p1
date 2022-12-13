@@ -1,8 +1,8 @@
-package inputClasses;
+package inputclasses;
 
 import java.util.ArrayList;
 
-public class MovieInput {
+public final class MovieInput {
     private String name;
     private int year;
     private int duration;
@@ -58,15 +58,4 @@ public class MovieInput {
         this.countriesBanned = countriesBanned;
     }
 
-    @Override
-    public String toString() {
-        return "MovieInput{" +
-                "name='" + name + '\'' +
-                ", year=" + year +
-                ", duration=" + duration +
-                ", genres=" + genres +
-                ", actors=" + actors +
-                ", countriesBanned=" + countriesBanned +
-                '}';
-    }
 }

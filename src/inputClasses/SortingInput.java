@@ -1,6 +1,6 @@
-package inputClasses;
+package inputclasses;
 
-public class SortingInput {
+public final class SortingInput {
     private String rating;
     private String duration;
 

@@ -1,6 +1,6 @@
-package inputClasses;
+package inputclasses;
 
-public class UserInput {
+public final class UserInput {
     private CredentialsInput credentials;
 
     public CredentialsInput getCredentials() {
@@ -11,10 +11,4 @@ public class UserInput {
         this.credentials = credentials;
     }
 
-    @Override
-    public String toString() {
-        return "UserInput{" +
-                "credentials=" + credentials +
-                '}';
-    }
 }

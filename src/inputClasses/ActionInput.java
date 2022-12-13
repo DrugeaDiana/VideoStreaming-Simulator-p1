@@ -1,15 +1,13 @@
-package inputClasses;
+package inputclasses;
 
-public class ActionInput {
+public final class ActionInput {
     private String type;
     private String page;
     private String movie;
     private String feature;
     private CredentialsInput credentials;
     private String startsWith;
-
     private FiltersInput filters;
-    // Filter
     private int count;
 
     private double rate;
@@ -54,6 +52,22 @@ public class ActionInput {
         this.credentials = credentials;
     }
 
+    public FiltersInput getFilters() {
+        return filters;
+    }
+
+    public void setFilters(final FiltersInput filters) {
+        this.filters = filters;
+    }
+
+    public double getRate() {
+        return rate;
+    }
+
+    public void setRate(final double rate) {
+        this.rate = rate;
+    }
+
     public String getStartsWith() {
         return startsWith;
     }
@@ -68,34 +82,5 @@ public class ActionInput {
 
     public void setCount(final int count) {
         this.count = count;
-    }
-
-    @Override
-    public String toString() {
-        return "ActionInput{" +
-                "type='" + type + '\'' +
-                ", page='" + page + '\'' +
-                ", movie='" + movie + '\'' +
-                ", feature='" + feature + '\'' +
-                ", credentials=" + credentials +
-                ", startsWith='" + startsWith + '\'' +
-                ", count=" + count +
-                '}';
-    }
-
-    public FiltersInput getFilters() {
-        return filters;
-    }
-
-    public void setFilters(final FiltersInput filters) {
-        this.filters = filters;
-    }
-
-    public double getRate() {
-        return rate;
-    }
-
-    public void setRate(double rate) {
-        this.rate = rate;
     }
 }

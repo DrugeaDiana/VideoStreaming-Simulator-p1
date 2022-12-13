@@ -1,6 +1,6 @@
-package inputClasses;
+package inputclasses;
 
-public class CredentialsInput {
+public final class CredentialsInput {
     private String name;
     private String password;
     private String accountType;
@@ -47,14 +47,4 @@ public class CredentialsInput {
         this.balance = balance;
     }
 
-    @Override
-    public String toString() {
-        return "CredentialsInput{" +
-                "name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", accountType='" + accountType + '\'' +
-                ", country='" + country + '\'' +
-                ", balance=" + balance +
-                '}';
-    }
 }

@@ -1,14 +1,12 @@
-package userClasses;
+package userclasses;
 
-import inputClasses.CredentialsInput;
-import inputClasses.UserInput;
-import movieClasses.Movie;
-
+import inputclasses.UserInput;
+import movieclasses.Movie;
 import java.util.ArrayList;
 
-public class User {
+public final class User {
+    private static final int FREE_PREMIUM_MOVIES = 15;
     private Credentials credentials;
-
     private int tokensCount;
     private int numFreePremiumMovies;
     private ArrayList<Movie> purchasedMovies = new ArrayList<>();
@@ -16,15 +14,19 @@ public class User {
     private ArrayList<Movie> likedMovies = new ArrayList<>();
     private ArrayList<Movie> ratedMovies = new ArrayList<>();
 
+    /**
+     * Creates a new user based on UserInput data received from input.
+     * @param userInput input data
+     */
     public User(final UserInput userInput) {
         credentials = new Credentials(userInput.getCredentials());
         tokensCount = 0;
-        numFreePremiumMovies = 15;
+        numFreePremiumMovies = FREE_PREMIUM_MOVIES;
     }
 
     public User() {
         tokensCount = 0;
-        numFreePremiumMovies = 15;
+        numFreePremiumMovies = FREE_PREMIUM_MOVIES;
     }
 
     public Credentials getCredentials() {
@@ -35,26 +37,11 @@ public class User {
         this.credentials = credentials;
     }
 
-    public void setCredentialsInput(final CredentialsInput credentials) {
-        this.credentials.setName(credentials.getName());
-        this.credentials.setBalanceNr(credentials.getBalance());
-        this.credentials.setCountry(credentials.getCountry());
-        this.credentials.setPassword(credentials.getPassword());
-        this.credentials.setAccountType(credentials.getAccountType());
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "credentials=" + credentials +
-                '}';
-    }
-
     public int getTokensCount() {
         return tokensCount;
     }
 
-    public void setTokensCount(int tokensCount) {
+    public void setTokensCount(final int tokensCount) {
         this.tokensCount = tokensCount;
     }
 
@@ -62,7 +49,7 @@ public class User {
         return numFreePremiumMovies;
     }
 
-    public void setNumFreePremiumMovies(int numFreePremiumMovies) {
+    public void setNumFreePremiumMovies(final int numFreePremiumMovies) {
         this.numFreePremiumMovies = numFreePremiumMovies;
     }
 
@@ -70,7 +57,7 @@ public class User {
         return purchasedMovies;
     }
 
-    public void setPurchasedMovies(ArrayList<Movie> purchasedMovies) {
+    public void setPurchasedMovies(final ArrayList<Movie> purchasedMovies) {
         this.purchasedMovies = purchasedMovies;
     }
 
@@ -78,7 +65,7 @@ public class User {
         return watchedMovies;
     }
 
-    public void setWatchedMovies(ArrayList<Movie> watchedMovies) {
+    public void setWatchedMovies(final ArrayList<Movie> watchedMovies) {
         this.watchedMovies = watchedMovies;
     }
 
@@ -86,7 +73,7 @@ public class User {
         return likedMovies;
     }
 
-    public void setLikedMovies(ArrayList<Movie> likedMovies) {
+    public void setLikedMovies(final ArrayList<Movie> likedMovies) {
         this.likedMovies = likedMovies;
     }
 
@@ -94,7 +81,7 @@ public class User {
         return ratedMovies;
     }
 
-    public void setRatedMovies(ArrayList<Movie> ratedMovies) {
+    public void setRatedMovies(final ArrayList<Movie> ratedMovies) {
         this.ratedMovies = ratedMovies;
     }
 }

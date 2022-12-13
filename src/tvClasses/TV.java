@@ -1,28 +1,38 @@
-package tvClasses;
+package tvclasses;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import inputClasses.ActionInput;
-import inputClasses.InputData;
-import inputClasses.MovieInput;
-import inputClasses.UserInput;
-import movieClasses.Movie;
-import tvClasses.actionClasses.ActionHandler;
-import tvClasses.databasesClasses.MovieDatabase;
-import tvClasses.databasesClasses.UsersDatabase;
-import tvClasses.pageClasses.*;
-import userClasses.User;
-
+import inputclasses.ActionInput;
+import inputclasses.InputData;
+import inputclasses.MovieInput;
+import inputclasses.UserInput;
+import movieclasses.Movie;
+import tvclasses.actionclasses.ActionHandler;
+import tvclasses.databaseclasses.MovieDatabase;
+import tvclasses.databaseclasses.UsersDatabase;
+import tvclasses.pageclasses.RegisterPage;
+import tvclasses.pageclasses.HomepageNon;
+import tvclasses.pageclasses.HomepageAuth;
+import tvclasses.pageclasses.LoginPage;
+import tvclasses.pageclasses.SeeDetailsPage;
+import tvclasses.pageclasses.UpgradesPage;
+import tvclasses.pageclasses.MoviesPage;
+import tvclasses.pageclasses.Page;
+import userclasses.User;
 import java.util.ArrayList;
 
-public class TV {
-    private ArrayList<Page> pages;
+/**
+ * The core of the program.
+ */
+public final class TV {
     private User activeUser;
     private Page activePage;
-    //private ArrayList<Action> actions;
+
+    /**
+     * The variables for all the pages in the program.
+     */
     private final HomepageAuth homepageAuth = new HomepageAuth();
     private final HomepageNon homepageNon = new HomepageNon();
     private final LoginPage loginPage = new LoginPage();
-    private final LogoutPage logoutPage = new LogoutPage();
     private final MoviesPage moviesPage = new MoviesPage();
     private final RegisterPage registerPage = new RegisterPage();
     private final SeeDetailsPage seeDetailsPage = new SeeDetailsPage();
@@ -31,19 +41,23 @@ public class TV {
     private final InputData input;
     private final ArrayNode output;
 
-    public TV(InputData input, ArrayNode output) {
+    public TV(final InputData input, final ArrayNode output) {
         this.input = input;
         this.output = output;
     }
+
+    /**
+     * Function to initialize the core of the program, adding the data in the specific databases
+     */
     public void initialize() {
-        ArrayList<User> users = new ArrayList<>();
-        for (UserInput user : input.getUsers()){
+        final ArrayList<User> users = new ArrayList<>();
+        for (final UserInput user : input.getUsers()) {
             users.add(new User(user));
         }
         UsersDatabase.getInstance().setUsers(users);
 
-        ArrayList<Movie> movies = new ArrayList<>();
-        for (MovieInput movie : input.getMovies()) {
+        final ArrayList<Movie> movies = new ArrayList<>();
+        for (final MovieInput movie : input.getMovies()) {
             movies.add(new Movie(movie));
         }
         MovieDatabase.getInstance().setMovies(movies);
@@ -52,9 +66,11 @@ public class TV {
         activePage = homepageNon;
     }
 
+    /**
+     * The main loop of the program, parsing through every action given at input
+     */
     public void mainLoop() {
-        for(ActionInput actionInput : input.getActions()) {
-            //System.out.println(actionInput.getType());
+        for (final ActionInput actionInput : input.getActions()) {
             actionHandler.actionParsing(actionInput, this);
         }
     }
@@ -63,7 +79,7 @@ public class TV {
         return activeUser;
     }
 
-    public void setActiveUser(User activeUser) {
+    public void setActiveUser(final User activeUser) {
         this.activeUser = activeUser;
     }
 
@@ -71,12 +87,8 @@ public class TV {
         return activePage;
     }
 
-    public void setActivePage(Page activePage) {
+    public void setActivePage(final Page activePage) {
         this.activePage = activePage;
-    }
-
-    public InputData getInput(){
-        return input;
     }
 
     public ArrayNode getOutput() {
@@ -89,10 +101,6 @@ public class TV {
 
     public LoginPage getLoginPage() {
         return loginPage;
-    }
-
-    public LogoutPage getLogoutPage() {
-        return logoutPage;
     }
 
     public MoviesPage getMoviesPage() {

@@ -1,9 +1,9 @@
-package inputClasses;
+package inputclasses;
 
 
 import java.util.ArrayList;
 
-public class InputData {
+public final class InputData {
     private ArrayList<UserInput> users;
     private ArrayList<MovieInput> movies;
     private ArrayList<ActionInput> actions;
@@ -20,7 +20,7 @@ public class InputData {
         return movies;
     }
 
-    public void setFilms(final ArrayList<MovieInput> movies) {
+    public void setMovies(final ArrayList<MovieInput> movies) {
         this.movies = movies;
     }
 
@@ -32,12 +32,4 @@ public class InputData {
         this.actions = actions;
     }
 
-    @Override
-    public String toString() {
-        return "InputData{" +
-                "users=" + users +
-                ", movies=" + movies +
-                ", actions=" + actions +
-                '}';
-    }
 }
